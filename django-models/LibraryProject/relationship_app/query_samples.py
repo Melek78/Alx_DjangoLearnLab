@@ -33,9 +33,8 @@ def run_queries():
     print("\n" + "-"*40 + "\n")
 
     try:
-        library = Library.objects.get(name=library_name)
-        librarian = library.librarian
-        print(f"Librarian of {library.name}: {librarian.name}")
+        librarian = Librarian.objects.get(library=Library.objects.get(name=library_name))
+        print(f"Librarian of {library_name}: {librarian.name}")
     except (Library.DoesNotExist, Librarian.DoesNotExist):
         print(f"Library or Librarian for '{library_name}' not found.")
 
