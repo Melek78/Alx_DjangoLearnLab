@@ -1,0 +1,17 @@
+{# bookshelf/templates/bookshelf/form_example.html #}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Example Form</title>
+</head>
+<body>
+  <h1>Create Book</h1>
+  <form method="post" action="">
+    {% csrf_token %}
+    <label for="title">Title</label>
+    <input id="title" name="title" type="text" maxlength="200" required>
+    <button type="submit">Create</button>
+  </form>
+</body>
+</html>
