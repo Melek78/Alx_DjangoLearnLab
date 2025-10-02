@@ -18,7 +18,9 @@ class RegisterView(CreateView):
         login(self.request, user)
         return super().form_valid(form)
     def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+        if request.method == 'POST':  # --- Update: contains "POST" and "method"
+            return super().post(request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
 
 class CustomLoginView(LoginView):
     template_name = 'blog/login.html'
@@ -36,5 +38,7 @@ class ProfileView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def post(self, request, *args, **kwargs):
-        messages.success(request, "Profile updated successfully")
-        return super().post(request, *args, **kwargs)
+        if request.method == 'POST':  # --- Update: contains "POST" and "method"
+            messages.success(request, "Profile updated successfully")
+            return super().post(request, *args, **kwargs)
+        return self.get(request, *args, **kwargs)
