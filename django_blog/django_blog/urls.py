@@ -20,5 +20,5 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path('', include('blog.auth_urls')),
+    path('', include('blog.urls')),
 ]
