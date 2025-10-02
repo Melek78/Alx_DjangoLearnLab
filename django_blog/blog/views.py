@@ -26,7 +26,7 @@ class CustomLoginView(LoginView):
 class CustomLogoutView(LogoutView):
     next_page = 'home'
 
-class ProfileView(LoginRequiredMixin, TemplateView):
+class ProfileView(LoginRequiredMixin, UpdateView):
     template_name = 'blog/profile.html'
     form_class = ProfileUpdateForm
     success_url = reverse_lazy('profile')
