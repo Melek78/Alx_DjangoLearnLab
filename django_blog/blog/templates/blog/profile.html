@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>User Profile</h1>
+
+    <div class="profile-details">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>First Name:</strong> {{ user.first_name }}</p>
+        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+    </div>
+
+    <div class="profile-actions">
+        <a href="{% url 'edit-profile' %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+    </div>
+</div>
+{% endblock %}
