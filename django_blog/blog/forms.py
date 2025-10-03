@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Post
+from .models import Profile, Post, Comment
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required= True)
@@ -31,10 +31,18 @@ class ProfileUpdateForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']  # author is set in view, not in the form
+        fields = ['title', 'content']
 
-    def clean_title(self):
-        title = self.cleaned_data.get('title', '').strip()
-        if not title:
-            raise forms.ValidationError("Title cannot be empty.")
-        return title
+    # def clean_title(self):
+    #     title = self.cleaned_data.get('title', '').strip()
+    #     if not title:
+    #         raise forms.ValidationError("Title cannot be empty.")
+    #     return title
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Write a comment...'}),
+        }

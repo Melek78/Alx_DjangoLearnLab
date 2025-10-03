@@ -1,17 +1,35 @@
-{# blog/templates/blog/post_detail.html #}
 {% extends "base.html" %}
 {% block content %}
 <article>
   <h1>{{ post.title }}</h1>
-  <p class="meta">By {{ post.author }} • {{ post.created_at|date:"F j, Y, g:i a" }}</p>
+  <p class="meta">By {{ post.author }} • {{ post.published_date|date:"F j, Y, g:i a" }}</p>
   <div class="content">{{ post.content|linebreaks }}</div>
 
-  {% if user == post.author %}
-    <p>
-      <a href="{% url 'blog:post-update' post.pk %}">Edit</a> |
-      <a href="{% url 'blog:post-delete' post.pk %}">Delete</a>
-    </p>
+  <hr>
+  <h2>Comments</h2>
+  {% for comment in comments %}
+    <div>
+      <strong>{{ comment.author }}</strong> • {{ comment.published_date|date:"F j, Y, g:i a" }}
+      <p>{{ comment.content }}</p>
+      {% if user == comment.author %}
+        <a href="{% url 'blog:comment-update' post.id comment.id %}">Edit</a> |
+        <a href="{% url 'blog:comment-delete' post.id comment.id %}">Delete</a>
+      {% endif %}
+    </div>
+    <hr>
+  {% empty %}
+    <p>No comments yet.</p>
+  {% endfor %}
+
+  {% if user.is_authenticated %}
+    <h3>Leave a comment</h3>
+    <form method="post" action="{% url 'blog:comment-create' post.id %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Post Comment</button>
+    </form>
+  {% else %}
+    <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
   {% endif %}
-  <p><a href="{% url 'blog:post-list' %}">Back to posts</a></p>
 </article>
 {% endblock %}
