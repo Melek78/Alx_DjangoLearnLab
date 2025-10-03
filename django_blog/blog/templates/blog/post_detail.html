@@ -9,7 +9,7 @@
   <h2>Comments</h2>
   {% for comment in comments %}
     <div>
-      <strong>{{ comment.author }}</strong> • {{ comment.published_date|date:"F j, Y, g:i a" }}
+      <strong>{{ comment.author }}</strong> • {{ comment.created_at|date:"F j, Y, g:i a" }}
       <p>{{ comment.content }}</p>
       {% if user == comment.author %}
         <a href="{% url 'blog:comment-update' post.id comment.id %}">Edit</a> |
