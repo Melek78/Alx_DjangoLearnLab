@@ -57,7 +57,7 @@ class PostListView(ListView):
     context_object_name = 'posts'
     paginate_by = 10
 
-class PostsByTagListView(ListView):
+class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/posts_by_tag.html'
     context_object_name = 'posts'
