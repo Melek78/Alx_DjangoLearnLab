@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Post, Tag
 from .forms import PostForm
+from taggit.models import Tag
 
 
 class RegisterView(CreateView):
