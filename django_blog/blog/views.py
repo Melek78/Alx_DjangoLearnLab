@@ -6,12 +6,13 @@ from django.views.generic.edit import CreateView, UpdateView
 from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post, Comment
 from.forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
-
-
+from django.db.models import Q
+from .models import Post, Tag
+from .forms import PostForm
 
 
 class RegisterView(CreateView):
@@ -54,6 +55,44 @@ class PostListView(ListView):
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
     paginate_by = 10
+
+class PostsByTagListView(ListView):
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        self.tag = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+        return self.tag.posts.order_by('-published_date').select_related('author').prefetch_related('tags')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = self.tag
+        return context
+
+class TagListView(ListView):
+    model = Tag
+    template_name = 'blog/tag_list.html'
+    context_object_name = 'tags'
+    queryset = Tag.objects.all()
+
+class SearchResultsView(ListView):
+    model = Post
+    template_name = 'blog/search_results.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '').strip()
+        if not query:
+            return Post.objects.none()
+        return Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct().order_by('-published_date').select_related('author').prefetch_related('tags')
+
 
 class PostDetailView(DetailView):
     model = Post
