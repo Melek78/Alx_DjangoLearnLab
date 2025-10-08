@@ -6,10 +6,12 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer, LikeSerializer
 from .permissions import IsOwnerOrReadOnly
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import action
 from notifications.utils import create_notification
+from rest_framework.response import Response
+from notifications.models import Notification
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -23,19 +25,18 @@ class PostViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticatedOrReadOnly])
     def like(self, request, pk=None):
-        post = self.get_object()
+        post = get_object_or_404(Post, pk=pk)
         user = request.user
-        like, created = Like.objects.get_or_create(user=user, post=post)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
         if not created:
             return Response({'detail': 'You already liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if post.author != user:
-            create_notification(
-                recipient=post.author,
-                actor=user,
-                verb='liked your post',
-                target=post
-            )
+        if post.author != request.user:
+            Notification.objects.create(
+            user=post.author,
+            post=post,
+            message=f"{request.user.username} liked your post!"
+        )
 
         return Response({'detail': 'Post liked successfully.'}, status=status.HTTP_201_CREATED)
 
