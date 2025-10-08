@@ -18,7 +18,7 @@ class RegisterView(generics.CreateAPIView):
         token, created = Token.objects.get_or_create(user=user)
         return Response({'user': response.data, 'token': token.key})
 
-class LoginView(GenericAPIView):
+class LoginView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = LoginSerializer
 
