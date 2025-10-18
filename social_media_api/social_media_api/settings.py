@@ -28,6 +28,7 @@ SECRET_KEY = 'django-insecure-61!c7(%$1#vn8jiyujce3l3#dht)(lc4ku)ybh5)503qsw7tk5
 DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
+PORT = os.getenv("PORT", "8000")
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
